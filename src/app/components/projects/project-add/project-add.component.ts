@@ -3,10 +3,14 @@ import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/fo
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatTableDataSource } from '@angular/material';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { PhasesFormComponent } from '../../phases/phases-form/phases-form.component';
 
 import { PhaseService } from '../../../services/phase.service';
+import { ProjectService } from '../../../services/project.service';
+import { Phase } from '../../../models/phase.model';
+import { Project } from '../../../models/project.model';
+import { ViewModelProject } from '../../../models/viewmodelproject.model';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -26,7 +30,7 @@ export class ProjectAddComponent implements OnInit {
   date = new FormControl({ value: new Date(), disabled: true });
   // min Date
   mindate =  new Date();
-
+  viewmodel = new ViewModelProject();
   // Validate Input
   FormControl = new FormControl('', [
     Validators.required
@@ -36,20 +40,27 @@ export class ProjectAddComponent implements OnInit {
 
   // Grid Add Phase to Project
   ListPhases = this.phaseService.phaseList;
-  displayedColumns = ['state', 'phase', 'description', 'startdate', 'enddate', 'edit', 'delete'];
+  displayedColumns = ['Title', 'Description', 'StartDate', 'EndDate', 'Edit', 'Delete'];
   dataSource = new MatTableDataSource(this.ListPhases);
 
-  constructor(public dialog: MatDialog, public phaseService: PhaseService) { }
+  constructor(public dialog: MatDialog, public phaseService: PhaseService,
+              public projectService: ProjectService, public viewmodelProject: ViewModelProject) { }
 
     DateFormat(myDate: Date) {
       return `${myDate.getDate()}/${(myDate.getMonth() + 1)}/${myDate.getFullYear()}`;
     }
 
     AddRows() {
-      const nroPhase = this.ListPhases.length + 1;
-      this.ListPhases.push({PhaseID: 0, Title: `Phase ${nroPhase}`, Description: 'Description',
-                         StartDate: this.DateFormat(new Date()), EndDate: this.DateFormat(new Date()), DemoUrl: 'd');
-      this.dataSource.filter = '';
+      const nroPhase =  this.ListPhases.length + 1;
+      this.ListPhases.push({ PhaseID: 0,
+                             Title: `Phase ${nroPhase}`,
+                             Description: 'Description',
+                             StartDate: new Date(),
+                             EndDate: new Date(),
+                             DemoUrl: 'demo',
+                             Edit: 'Edit',
+                             Delete: 'Delete'});
+      this.dataSource = new MatTableDataSource(this.ListPhases);
     }
 
     DeleteRow(element) {
@@ -62,12 +73,46 @@ export class ProjectAddComponent implements OnInit {
     }
 
     openDialog(dataPhases) {
-      console.log(dataPhases);
-      this.dialog.open(PhasesFormComponent, {
+      const dialogRef = this.dialog.open(PhasesFormComponent, {
         data: dataPhases
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        dataPhases = result;
+        console.log(dataPhases);
       });
     }
   ngOnInit() {
+    this.ListPhases = [];
+    this.projectService.selectedProject = new Project();
+    this.projectService.selectedProject.StartDate = new Date();
+    this.projectService.selectedProject.EndDate = new Date();
   }
+
+  onSubmit(form: NgForm) {
+    // console.table(form.value);
+    // console.table(this.ListPhases);
+    this.viewmodel.ModelProject = form.value;
+    this.viewmodel.ModelPhase = this.ListPhases;
+    console.log(this.viewmodel);
+    this.projectService.postProject(this.viewmodel);
+  //    .subscribe(data => {
+  //      //this.resetForm(form);
+  //      //this.projectService.getClientList();
+  //    });
+}
+// Agregar(form: NgForm) {
+// console.table(this.projectService.selectedProject);
+//  console.log(form);
+// }
+
+
+// const DatosPrueba=[
+//   Title= "Titulo1",
+//     Description= "descripcion1",
+//     StartDate= Date,
+//     EndDate= ,
+//     DemoUrl= "Demo1",
+// ];
 
 }

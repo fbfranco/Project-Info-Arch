@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject} from '@angular/core';
+import { Component, OnInit, Inject, ViewChild} from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { DISABLED } from '@angular/forms/src/model';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
-
+import { MatDialog, MAT_DIALOG_DATA, MatTable,  MatDialogRef } from '@angular/material';
+import { PhaseService } from '../../../services/phase.service';
+import { Phase } from '../../../models/phase.model';
 
 // Error Message Title
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -25,17 +26,23 @@ export class PhasesFormComponent implements OnInit {
   minDate = new Date();
   datePrueba = new Date();
   datePrueba2 = new Date();
+  @ViewChild('phasesGrid') phaseTable: MatTable<Phase>;
+  phaseSelected = this.phaseService.phaseList;
   // custom ErrorStateMatcher
   ErrorTitleControl = new FormControl('', [
     Validators.required,
   ]);
   matcher = new MyErrorStateMatcher();
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(public dialogRef: MatDialogRef<PhasesFormComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any, public phaseService: PhaseService) { }
 
   ngOnInit() {
-    this.datePrueba = new Date(this.data.startdate);
-    this.datePrueba2 = new Date(this.data.enddate);
+    this.datePrueba = new Date(this.data.StartDate);
+    this.datePrueba2 = new Date(this.data.EndDate);
   }
 
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }
