@@ -51,9 +51,9 @@
     <h4>Add Phase <button mat-raised-button color="primary" (click)="AddRows()">+</button></h4>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <!--Nro Column -->
-      <ng-container matColumnDef="nro">
-        <th mat-header-cell *matHeaderCellDef> Nro </th>
-        <td mat-cell *matCellDef="let element"> {{element.nro}} </td>
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef> State </th>
+        <td mat-cell *matCellDef="let element"> {{element.state}} </td>
       </ng-container>
 
       <!--Phase Column -->
@@ -83,14 +83,16 @@
         <!-- Edit Column -->
         <ng-container matColumnDef="edit">
           <th mat-header-cell *matHeaderCellDef > Editar </th>
-          <td mat-cell *matCellDef="let element"><button mat-raised-button >{{element.edit}}</button>  </td>
+          <td mat-cell *matCellDef="let element"><button mat-raised-button (click)="openDialog(element)">{{element.edit}}</button>  </td>
         </ng-container>
 
          <!-- Delete Column -->
          <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef > Delete </th>
             <!-- <td>{{element.phase}}</td> -->
-            <td mat-cell *matCellDef="let element" (click)="DeleteRows(element.nro)"><button mat-raised-button color="warn" >{{element.delete}}</button>  </td>
+            <td mat-cell *matCellDef="let element">
+              <button mat-raised-button color="warn" (click)="DeleteRow(element)" >{{element.delete}}</button>  
+            </td>
           </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
