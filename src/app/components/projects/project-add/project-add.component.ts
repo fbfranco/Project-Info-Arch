@@ -23,20 +23,25 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-project-add',
   templateUrl: './project-add.component.html',
-  styleUrls: ['./project-add.component.css']
+  styleUrls: ['./project-add.component.scss']
 })
 export class ProjectAddComponent implements OnInit {
   // Datepicker
   date = new FormControl({ value: new Date(), disabled: true });
-  // min Date
   mindate =  new Date();
   viewmodel = new ViewModelProject();
-  // Validate Input
   FormControl = new FormControl('', [
     Validators.required
   ]);
   // Call Function to active err
   matcher = new MyErrorStateMatcher();
+  email = new FormControl('', [Validators.required, Validators.email]);
+
+  getErrorMessage() {
+    return this.email.hasError('required') ? 'You must enter a value' :
+        this.email.hasError('email') ? 'Not a valid email' :
+            '';
+  }
 
   // Grid Add Phase to Project
   ListPhases = this.phaseService.phaseList;
@@ -100,19 +105,5 @@ export class ProjectAddComponent implements OnInit {
   //      //this.resetForm(form);
   //      //this.projectService.getClientList();
   //    });
-}
-// Agregar(form: NgForm) {
-// console.table(this.projectService.selectedProject);
-//  console.log(form);
-// }
-
-
-// const DatosPrueba=[
-//   Title= "Titulo1",
-//     Description= "descripcion1",
-//     StartDate= Date,
-//     EndDate= ,
-//     DemoUrl= "Demo1",
-// ];
-
+  }
 }
