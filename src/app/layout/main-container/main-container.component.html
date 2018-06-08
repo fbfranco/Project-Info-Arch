@@ -15,17 +15,17 @@
           fbfranco29  <i class="fas fa-circle"></i>
         </button>
       </div>
-    </div>        
+    </div>
 </mat-toolbar>
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav mode="side" opened class="content-sidenav">
       <button class="user-name" mat-button [matMenuTriggerFor]="menu" *ngIf="media.isActive('xs')">
           fbfranco29  <i class="fas fa-circle"></i>
-        </button> 
+        </button>
     <button mat-button><i class="fas fa-briefcase"></i> User</button>
     <button mat-button routerLink="/Project"><i class="fas fa-briefcase"></i>  Project</button>
     <!-- <button mat-button routerLink="/Phase"><i class="fas fa-briefcase"></i>  EditPhase</button> -->
-    <button mat-button><i class="fas fa-briefcase"></i> Timeline</button>
+    <!-- <button mat-button><i class="fas fa-briefcase"></i> Timeline</button> -->
   </mat-sidenav>
   <mat-sidenav-content class="main-container" fxLayout="column">
     <mat-card class="content-router-outlet">
